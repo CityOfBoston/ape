@@ -5,6 +5,34 @@
  * Allows finer control of the Cache Control header.
  */
 
+/*
+ * Implements hook_permision
+ */
+function ape_permission() {
+  return array(
+    'administer ape' => array(
+      'title' => t('Administer the APE'),
+      'description' => t('Set Advanced Page Expiration rules.'),
+    ),
+  );
+}
+
+/*
+ * Implements hook_menu
+ */
+function ape_menu() {
+  $items['admin/config/development/performance/ape'] = array(
+    'title' => 'APE Configuration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ape_admin_settings'),
+    'access arguments' => array('access ape'),
+    'file' => 'ape.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
 /**
  * Sets the cache control header.
  *
@@ -23,4 +51,3 @@ function ape_set_cache_header($max_age) {
 function ape_rules_access($type, $name) {
   return user_access('administer ape');
 }
-
