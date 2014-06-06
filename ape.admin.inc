@@ -7,7 +7,7 @@ function ape_admin_settings($form, &$form_state) {
   
   $form['page_caching'] = array(
     '#type' => 'fieldset', 
-    '#title' => t('Page Caching'), 
+    '#title' => t('General Page Caching'), 
     '#collapsible' => FALSE, 
     '#collapsed' => FALSE,
   );
@@ -17,17 +17,24 @@ function ape_admin_settings($form, &$form_state) {
     '#type' => 'select',
     '#title' => t('Global Page Expiration'),
     '#options' => $period,
-    '#default_value' => variable_get('ape_global_expiration', 0),
-    '#description' => t('The standard expiration lifetime for cached pages.'),
+    '#default_value' => variable_get('ape_global_lifetime', 0),
+    '#description' => t('The standard expiration lifetime for cached pages. Ideally this is set as long as possible.'),
   );
-  $form['page_caching']['ape_exceptions_lifetime'] = array(
+  
+  $form['page_caching_exceptions'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('Page Caching Exceptions'), 
+    '#collapsible' => FALSE, 
+    '#collapsed' => FALSE,
+  );
+  $form['page_caching_exceptions']['ape_exceptions_lifetime'] = array(
     '#type' => 'select',
-    '#title' => t('Global Page Expiration'),
+    '#title' => t('Expiration Length for Exceptions'),
     '#options' => $period,
     '#default_value' => variable_get('ape_exceptions_lifetime', 0),
-    '#description' => t('A secondary page expiration lifetime. Useful for pages that should refresh at a different rate than most pages.'),
+    '#description' => t('A secondary page expiration lifetime. Useful for pages that should refresh at a different rate than most pages, such as a short interval like 5 minutes.'),
   );
-  $form['page_caching']['ape_exceptions'] = array(
+  $form['page_caching_exceptions']['ape_exceptions'] = array(
     '#type' => 'textarea',
     '#title' => t('Page Expiration Exceptions'),
     '#default_value' => variable_get('ape_exceptions', ''),
@@ -35,7 +42,7 @@ function ape_admin_settings($form, &$form_state) {
     '#height' => 10,
     '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
   );
-  $form['page_caching']['ape_exclusions'] = array(
+  $form['page_caching_exceptions']['ape_exclusions'] = array(
     '#type' => 'textarea',
     '#title' => t('Pages to exclude from caching'),
     '#default_value' => variable_get('ape_exclusions', ''),
