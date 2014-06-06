@@ -5,8 +5,8 @@
  * Allows finer control of the Cache Control header.
  */
 
-/*
- * Implements hook_permision
+/**
+ * Implements hook_permision.
  */
 function ape_permission() {
   return array(
@@ -17,8 +17,8 @@ function ape_permission() {
   );
 }
 
-/*
- * Implements hook_menu
+/**
+ * Implements hook_menu.
  */
 function ape_menu() {
   $items['admin/config/development/performance/ape'] = array(
@@ -32,6 +32,10 @@ function ape_menu() {
 
   return $items;
 }
+
+/**
+ * Implements hook_init.
+ */
 
 /**
  * Sets the cache control header.
