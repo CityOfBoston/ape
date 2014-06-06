@@ -8,17 +8,19 @@
 /**
  * Sets the cache control header.
  *
- * @param int $age
+ * @param int $max_age
  *   The cache expiration age, in seconds.
  */
-function ape_set_cache_header($age) {
-  // @todo Set cache headers.
+function ape_set_cache_header($max_age) {
+  $name = 'Cache-Control';
+  $value = 'public, max-age=' . $max_age;
+  drupal_add_http_header($name, $value);
 }
 
 /**
  * Determines whether a user may administer ape.
  */
-function ape_access($type, $name) {
+function ape_rules_access($type, $name) {
   return user_access('administer ape');
 }
 

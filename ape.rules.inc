@@ -14,16 +14,16 @@ function ape_rules_action_info() {
       'label' => t('Set page cache expiration'),
       'group' => t('System'),
       'parameter' => array(
-        'age' => array(
+        'max_age' => array(
           'type' => 'integer',
           'label' => t('Expiration of cached page'),
-          'description' => t('The maximum time an external cache can use an old version of a page.'),
+          'description' => t('The maximum time an external cache can use an old version of a page, in seconds.'),
           'restriction' => 'input',
           'default value' => 1800,
         ),
       ),
       'base' => 'ape_set_cache_header',
-      'access callback' => 'ape_access',
+      'access callback' => 'ape_rules_access',
     ),
   );
 }
