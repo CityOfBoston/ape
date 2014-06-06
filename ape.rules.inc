@@ -27,20 +27,3 @@ function ape_rules_action_info() {
     ),
   );
 }
-
-/**
- * Sets the cache control header.
- *
- * @param int $age
- *   The cache expiration age, in seconds.
- */
-function ape_set_cache_header($age) {
-
-}
-
-/**
- * Determines whether a user may administer ape.
- */
-function ape_access($type, $name) {
-  return user_access('administer ape');
-}
