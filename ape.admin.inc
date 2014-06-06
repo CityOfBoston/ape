@@ -1,17 +1,22 @@
 <?php
 
 /**
+ * @file
+ * Admin form for APE (Advanced Page Expiration) module
+ */
+
+/**
  * Administrative settings form
  */
 function ape_admin_settings($form, &$form_state) {
-  
+
   $form['page_caching'] = array(
-    '#type' => 'fieldset', 
-    '#title' => t('General Page Caching'), 
-    '#collapsible' => FALSE, 
+    '#type' => 'fieldset',
+    '#title' => t('General Page Caching'),
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
-  
+
   $period = drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 604800, 2592000, 31536000), 'format_interval');
   $form['page_caching']['ape_global_lifetime'] = array(
     '#type' => 'select',
@@ -20,11 +25,11 @@ function ape_admin_settings($form, &$form_state) {
     '#default_value' => variable_get('ape_global_lifetime', 0),
     '#description' => t('The standard expiration lifetime for cached pages. Ideally this is set as long as possible.'),
   );
-  
+
   $form['page_caching_exceptions'] = array(
-    '#type' => 'fieldset', 
-    '#title' => t('Page Caching Exceptions'), 
-    '#collapsible' => FALSE, 
+    '#type' => 'fieldset',
+    '#title' => t('Page Caching Exceptions'),
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
   $form['page_caching_exceptions']['ape_exceptions_lifetime'] = array(
@@ -50,11 +55,11 @@ function ape_admin_settings($form, &$form_state) {
     '#height' => 5,
     '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
   );
-  
+
   $form['server_codes'] = array(
-    '#type' => 'fieldset', 
-    '#title' => t('Server Response Caching'), 
-    '#collapsible' => FALSE, 
+    '#type' => 'fieldset',
+    '#title' => t('Server Response Caching'),
+    '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
   $form['server_codes']['ape_301_lifetime'] = array(
