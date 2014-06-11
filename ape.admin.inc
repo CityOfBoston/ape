@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Admin form for APE (Advanced Page Expiration) module
+ * Admin form for Advanced Page Expiration module
  */
 
 /**
@@ -16,8 +16,15 @@ function ape_admin_settings($form, &$form_state) {
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
+  $cache = variable_get('cache', 0);
+  $form['page_caching']['cache'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Cache pages for anonymous users'),
+    '#default_value' => $cache,
+    '#weight' => -2,
+  );
 
-  $period = drupal_map_assoc(array(0, 60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 604800, 2592000, 31536000), 'format_interval');
+  $period = drupal_map_assoc(array(60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 604800, 2592000, 31536000), 'format_interval');
   $form['page_caching']['ape_global_lifetime'] = array(
     '#type' => 'select',
     '#title' => t('Global Page Expiration'),

@@ -1,4 +1,4 @@
-name = APE (Advanced Page Expiration)
+name = Advanced Page Expiration
 description = Allows finer control of the Cache Control header.
 package = Performance and scalability
 core = 7.x
