@@ -64,13 +64,10 @@ function ape_init() {
  */
 function ape_check_cacheable() {
 
-  // These steps are intended to do individual checks in order of cost.
-  if (user_is_anonymous()) {
-    if (variable_get('cache', 0)) {
-      $excluded = ape_check_path(variable_get('ape_exclusions', ''), $_GET['q']);
-      if (!$excluded) {
-        return TRUE;
-      }
+  if (user_is_anonymous() && variable_get('cache', 0)) {
+    $excluded = ape_check_path(variable_get('ape_exclusions', ''), $_GET['q']);
+    if (!$excluded) {
+      return TRUE;
     }
   }
   else {
