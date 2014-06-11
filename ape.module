@@ -35,15 +35,15 @@ function ape_menu() {
 
 /**
  * Implements hook_init().
+ *
+ * Set an exception length cache-control, or if no match set a global value.
  */
 function ape_init() {
 
-  global $user;
-  $max_age = 0;
-
   // Check to see if another module or hook has already set an APE header. This
   // allows rules or other module integration to take precedent.
-  if (!isset($GLOBALS['_ape_cache_set']) && $user->uid == 0) {
+  if (!isset($GLOBALS['_ape_cache_set']) && user_is_anonymous()) {
+    $max_age = 0;
     if (ape_check_path(variable_get('ape_exceptions', ''), $_GET['q'])) {
       $max_age = variable_get('ape_exceptions_lifetime', 0);
     }
@@ -65,8 +65,7 @@ function ape_init() {
 function ape_check_cacheable() {
 
   // These steps are intended to do individual checks in order of cost.
-  global $user;
-  if ($user->uid == 0) {
+  if (user_is_anonymous()) {
     if (variable_get('cache', 0)) {
       $excluded = ape_check_path(variable_get('ape_exclusions', ''), $_GET['q']);
       if (!$excluded) {
@@ -138,6 +137,9 @@ function ape_rules_access($type, $name) {
 
 /**
  * Implements hook_drupal_goto_alter().
+ *
+ * If a drupal_goto is called, detect if it is a 301 or 302 and set the
+ * cache-control header appropriately based on configured options.
  */
 function ape_drupal_goto_alter(&$path, &$options, &$http_response_code) {
   $max_age = 0;
@@ -152,6 +154,10 @@ function ape_drupal_goto_alter(&$path, &$options, &$http_response_code) {
 
 /**
  * Implements hook_form_FORM_ID_alter().
+ *
+ * Remove page_cache_maximum_age selection from main performance page and
+ * instead direct users to this module's config page. Also do a little cleanup
+ * to clarify external caching.
  */
 function ape_form_system_performance_settings_alter(&$form, &$form_state) {
   unset($form['caching']['page_cache_maximum_age']);
