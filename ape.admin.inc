@@ -45,11 +45,11 @@ function ape_admin_settings($form, &$form_state) {
     ),
     'format_interval'
   );
-  $form['page_caching']['ape_global_lifetime'] = array(
+  $form['page_caching']['page_cache_maximum_age'] = array(
     '#type' => 'select',
     '#title' => t('Global page expiration'),
     '#options' => $period,
-    '#default_value' => variable_get('ape_global_lifetime', 0),
+    '#default_value' => variable_get('page_cache_maximum_age', 0),
     '#description' => t('The standard expiration lifetime for cached pages. Ideally this is set as long as possible.'),
   );
 
