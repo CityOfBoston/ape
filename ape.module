@@ -6,23 +6,23 @@
  */
 
 /**
- * Implements hook_permision.
+ * Implements hook_permision().
  */
 function ape_permission() {
   return array(
     'administer ape' => array(
-      'title' => t('Administer APE'),
-      'description' => t('Set Advanced Page Expiration rules.'),
+      'title' => t('Administer advanced page expiration'),
+      'description' => t('Set advanced page expiration rules.'),
     ),
   );
 }
 
 /**
- * Implements hook_menu.
+ * Implements hook_menu().
  */
 function ape_menu() {
   $items['admin/config/development/ape'] = array(
-    'title' => 'Advanced Page Expiration',
+    'title' => 'Advanced page expiration',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('ape_admin_settings'),
     'description' => 'Configure the strategy for the cache-control header which defines cache lifetime for external caching systems.',
@@ -34,16 +34,16 @@ function ape_menu() {
 }
 
 /**
- * Implements hook_init.
+ * Implements hook_init().
  */
 function ape_init() {
 
-  GLOBAL $user;
+  global $user;
   $max_age = 0;
 
   // Check to see if another module or hook has already set an APE header. This
   // allows rules or other module integration to take precedent.
-  if (!isset($GLOBALS['ape_cache_set']) && $user->uid == 0) {
+  if (!isset($GLOBALS['_ape_cache_set']) && $user->uid == 0) {
     if (ape_check_path(variable_get('ape_exceptions', ''), $_GET['q'])) {
       $max_age = variable_get('ape_exceptions_lifetime', 0);
     }
@@ -56,13 +56,16 @@ function ape_init() {
 
 /**
  * Check if global page caching is enabled and the user is anonymous.
- *  @global object $user
- *  @return boolean
+ *
+ * @global object $user
+ * @return bool
+ *   True if the user is anonymous, caching is enabled and the path is not in
+ *   the excludes list.
  */
 function ape_check_cacheable() {
 
-  // These steps are purposefully designed to do individual checks in order of cost.
-  GLOBAL $user;
+  // These steps are intended to do individual checks in order of cost.
+  global $user;
   if ($user->uid == 0) {
     if (variable_get('cache', 0)) {
       $excluded = ape_check_path(variable_get('ape_exclusions', ''), $_GET['q']);
@@ -92,9 +95,20 @@ function ape_set_cache_header($max_age = 0, $check = TRUE) {
     $value = 'public, max-age=' . $max_age;
   }
   drupal_add_http_header($name, $value);
-  $GLOBALS['ape_cache_set'] = TRUE;
+  $GLOBALS['_ape_cache_set'] = TRUE;
 }
 
+/**
+ * Checks saved paths against the current request path.
+ *
+ * @param string $haystack
+ *   The list of paths to compare.
+ * @param string $path
+ *   The path to check against.
+ *
+ * @return bool
+ *   Whether the path was found within the haystack.
+ */
 function ape_check_path($haystack, $path = NULL) {
   if (!$path) {
     $path = $_GET['q'];
@@ -103,7 +117,7 @@ function ape_check_path($haystack, $path = NULL) {
   // Convert path to lowercase. This allows comparison of the same path
   // with different case. Ex: /Page, /page, /PAGE.
   $pages = drupal_strtolower($haystack);
-  // Convert the Drupal path to lowercase
+  // Convert the Drupal path to lowercase.
   $path = drupal_strtolower(drupal_get_path_alias($path));
   // Compare the lowercase internal and lowercase path alias (if any).
   $page_match = drupal_match_path($path, $pages);
@@ -114,8 +128,8 @@ function ape_check_path($haystack, $path = NULL) {
 }
 
 /**
- *
  * Determines whether a user may administer ape.
+ *
  * Required for rules integration.
  */
 function ape_rules_access($type, $name) {
@@ -123,7 +137,7 @@ function ape_rules_access($type, $name) {
 }
 
 /**
- * Implements hook_drupal_goto_alter
+ * Implements hook_drupal_goto_alter().
  */
 function ape_drupal_goto_alter(&$path, &$options, &$http_response_code) {
   $max_age = 0;
@@ -137,7 +151,7 @@ function ape_drupal_goto_alter(&$path, &$options, &$http_response_code) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter
+ * Implements hook_form_FORM_ID_alter().
  */
 function ape_form_system_performance_settings_alter(&$form, &$form_state) {
   unset($form['caching']['page_cache_maximum_age']);
@@ -147,7 +161,7 @@ function ape_form_system_performance_settings_alter(&$form, &$form_state) {
   $form['caching']['#weight'] = -4;
   $form['ape_caching'] = array(
     '#type' => 'fieldset',
-    '#title' => t('External Page Caching'),
+    '#title' => t('External page caching'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
     '#weight' => -3,

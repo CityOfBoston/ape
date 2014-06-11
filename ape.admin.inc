@@ -6,13 +6,13 @@
  */
 
 /**
- * Administrative settings form
+ * Administrative settings form.
  */
 function ape_admin_settings($form, &$form_state) {
 
   $form['page_caching'] = array(
     '#type' => 'fieldset',
-    '#title' => t('General Page Caching'),
+    '#title' => t('General page caching'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
@@ -24,10 +24,30 @@ function ape_admin_settings($form, &$form_state) {
     '#weight' => -2,
   );
 
-  $period = drupal_map_assoc(array(60, 180, 300, 600, 900, 1800, 2700, 3600, 10800, 21600, 32400, 43200, 86400, 604800, 2592000, 31536000), 'format_interval');
+  $period = drupal_map_assoc(
+    array(
+      60,
+      180,
+      300,
+      600,
+      900,
+      1800,
+      2700,
+      3600,
+      10800,
+      21600,
+      32400,
+      43200,
+      86400,
+      604800,
+      2592000,
+      31536000,
+    ),
+    'format_interval'
+  );
   $form['page_caching']['ape_global_lifetime'] = array(
     '#type' => 'select',
-    '#title' => t('Global Page Expiration'),
+    '#title' => t('Global page expiration'),
     '#options' => $period,
     '#default_value' => variable_get('ape_global_lifetime', 0),
     '#description' => t('The standard expiration lifetime for cached pages. Ideally this is set as long as possible.'),
@@ -35,20 +55,20 @@ function ape_admin_settings($form, &$form_state) {
 
   $form['page_caching_exceptions'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Page Caching Exceptions'),
+    '#title' => t('Page caching exceptions'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
   $form['page_caching_exceptions']['ape_exceptions_lifetime'] = array(
     '#type' => 'select',
-    '#title' => t('Expiration Length for Exceptions'),
+    '#title' => t('Expiration length for exceptions'),
     '#options' => $period,
     '#default_value' => variable_get('ape_exceptions_lifetime', 0),
     '#description' => t('A secondary page expiration lifetime. Useful for pages that should refresh at a different rate than most pages, such as a short interval like 5 minutes.'),
   );
   $form['page_caching_exceptions']['ape_exceptions'] = array(
     '#type' => 'textarea',
-    '#title' => t('Page Expiration Exceptions'),
+    '#title' => t('Page expiration exceptions'),
     '#default_value' => variable_get('ape_exceptions', ''),
     '#width' => 40,
     '#height' => 10,
@@ -65,7 +85,7 @@ function ape_admin_settings($form, &$form_state) {
 
   $form['server_codes'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Server Response Caching'),
+    '#title' => t('Server response caching'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
