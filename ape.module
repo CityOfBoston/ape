@@ -34,30 +34,82 @@ function ape_menu() {
 }
 
 /**
- * Implements hook_init().
+ * Determines whether a user may administer ape.
+ *
+ * Required for rules integration.
+ */
+function ape_rules_access($type, $name) {
+  return user_access('administer ape');
+}
+
+/**
+ * Implements hook_drupal_goto_alter().
+ *
+ * If a drupal_goto is called, detect if it is a 301 or 302 and set the
+ * cache-control header appropriately based on configured options.
+ *
+ * This hook is used so we know the response code without having to use PHP 5.4.
+ */
+function ape_drupal_goto_alter(&$path, &$options, &$http_response_code) {
+  $max_age = NULL;
+  if ($http_response_code == 301) {
+    $max_age = variable_get('ape_301_lifetime', 0);
+  }
+  elseif ($http_response_code == 302) {
+    $max_age = variable_get('ape_302_lifetime', 0);
+  }
+  ape_cache_set($max_age);
+}
+
+/**
+ * Implements hook_page_delivery_callback_alter().
  *
  * Set an exception length cache-control, or if no match set a global value.
  */
-function ape_init() {
-
+function ape_page_delivery_callback_alter(&$callback) {
+  $max_age = ape_cache_set();
   // Check to see if another module or hook has already set an APE header. This
   // allows rules or other module integration to take precedent.
-  if (!isset($GLOBALS['_ape_cache_set']) && user_is_anonymous()) {
-    $max_age = 0;
-    if (ape_check_path(variable_get('ape_exceptions', ''), $_GET['q'])) {
-      $max_age = variable_get('ape_exceptions_lifetime', 0);
+  if (is_null($max_age)) {
+    if (ape_check_path(variable_get('ape_alternatives', ''), $_GET['q'])) {
+      $max_age = variable_get('ape_alternative_lifetime', 0);
     }
     else {
       $max_age = variable_get('page_cache_maximum_age', 0);
     }
-    ape_set_cache_header($max_age);
   }
+  ape_set_cache_header($max_age);
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Remove page_cache_maximum_age selection from main performance page and
+ * instead direct users to this module's config page. Also do a little cleanup
+ * to clarify external caching.
+ */
+function ape_form_system_performance_settings_alter(&$form, &$form_state) {
+  unset($form['caching']['page_cache_maximum_age']);
+
+  $form['clear_cache']['#weight'] = -5;
+  $form['caching']['#title'] = t('General Caching');
+  $form['caching']['#weight'] = -4;
+  $form['ape_caching'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('External page caching'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#weight' => -3,
+  );
+
+  $form['ape_caching']['page_cache_maximum_age'] = array(
+    '#markup' => l(t('Configure external page caching strategy with APE.'), 'admin/config/development/ape'),
+  );
 }
 
 /**
  * Check if global page caching is enabled and the user is anonymous.
  *
- * @global object $user
  * @return bool
  *   True if the user is anonymous, caching is enabled and the path is not in
  *   the excludes list.
@@ -76,22 +128,35 @@ function ape_check_cacheable() {
 }
 
 /**
+ * Statically cache an expiration length from other modules
+ *
+ * @param int $new_age
+ * @return int
+ */
+function ape_cache_set($new_age = NULL) {
+  $max_age = &drupal_static(__FUNCTION__);
+  if(!isset($max_age)) {
+    $max_age = NULL;
+  }
+  if(is_null($max_age) && !is_null($new_age)) {
+    $max_age = $new_age;
+  }
+  return $max_age;
+}
+
+/**
  * Sets the cache control header.
  *
  * @param int $max_age
  *   The cache expiration age, in seconds.
- * @param bool $check
- *   Check if the page is cacheable when setting header.
  */
-function ape_set_cache_header($max_age = 0, $check = TRUE) {
+function ape_set_cache_header($max_age) {
   $name = 'Cache-Control';
   $value = 'no-cache, must-revalidate, post-check=0, pre-check=0';
-  $cacheable = $check ? ape_check_cacheable() : FALSE;
-  if ($max_age > 0 && $cacheable) {
+  if ($max_age > 0 && ape_check_cacheable()) {
     $value = 'public, max-age=' . $max_age;
   }
   drupal_add_http_header($name, $value);
-  $GLOBALS['_ape_cache_set'] = TRUE;
 }
 
 /**
@@ -121,56 +186,4 @@ function ape_check_path($haystack, $path = NULL) {
     $page_match = $page_match || drupal_match_path($path, $pages);
   }
   return $page_match;
-}
-
-/**
- * Determines whether a user may administer ape.
- *
- * Required for rules integration.
- */
-function ape_rules_access($type, $name) {
-  return user_access('administer ape');
-}
-
-/**
- * Implements hook_drupal_goto_alter().
- *
- * If a drupal_goto is called, detect if it is a 301 or 302 and set the
- * cache-control header appropriately based on configured options.
- */
-function ape_drupal_goto_alter(&$path, &$options, &$http_response_code) {
-  $max_age = 0;
-  if ($http_response_code == 301) {
-    $max_age = variable_get('ape_301_lifetime', 0);
-  }
-  elseif ($http_response_code == 302) {
-    $max_age = variable_get('ape_302_lifetime', 0);
-  }
-  ape_set_cache_header($max_age);
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- *
- * Remove page_cache_maximum_age selection from main performance page and
- * instead direct users to this module's config page. Also do a little cleanup
- * to clarify external caching.
- */
-function ape_form_system_performance_settings_alter(&$form, &$form_state) {
-  unset($form['caching']['page_cache_maximum_age']);
-
-  $form['clear_cache']['#weight'] = -5;
-  $form['caching']['#title'] = t('General Caching');
-  $form['caching']['#weight'] = -4;
-  $form['ape_caching'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('External page caching'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
-    '#weight' => -3,
-  );
-
-  $form['ape_caching']['page_cache_maximum_age'] = array(
-    '#markup' => l(t('Configure external page caching strategy with APE.'), 'admin/config/development/ape'),
-  );
 }

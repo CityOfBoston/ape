@@ -22,7 +22,7 @@ function ape_rules_action_info() {
           'default value' => 1800,
         ),
       ),
-      'base' => 'ape_set_cache_header',
+      'base' => 'ape_cache_set',
       'access callback' => 'ape_rules_access',
     ),
   );
