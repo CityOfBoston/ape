@@ -52,34 +52,34 @@ function ape_admin_settings($form, &$form_state) {
     '#default_value' => variable_get('page_cache_maximum_age', 0),
     '#description' => t('The standard expiration lifetime for cached pages. Ideally this is set as long as possible.'),
   );
-
-  $form['page_caching_exceptions'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Page caching exceptions'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
-  );
-  $form['page_caching_exceptions']['ape_exceptions_lifetime'] = array(
-    '#type' => 'select',
-    '#title' => t('Expiration length for exceptions'),
-    '#options' => $period,
-    '#default_value' => variable_get('ape_exceptions_lifetime', 0),
-    '#description' => t('A secondary page expiration lifetime. Useful for pages that should refresh at a different rate than most pages, such as a short interval like 5 minutes.'),
-  );
-  $form['page_caching_exceptions']['ape_exceptions'] = array(
-    '#type' => 'textarea',
-    '#title' => t('Page expiration exceptions'),
-    '#default_value' => variable_get('ape_exceptions', ''),
-    '#width' => 40,
-    '#height' => 10,
-    '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
-  );
-  $form['page_caching_exceptions']['ape_exclusions'] = array(
+  $form['page_caching']['ape_exclusions'] = array(
     '#type' => 'textarea',
     '#title' => t('Pages to exclude from caching'),
     '#default_value' => variable_get('ape_exclusions', ''),
     '#width' => 40,
     '#height' => 5,
+    '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
+  );
+
+  $form['page_caching_alternative'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Alternative page caching'),
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+  );
+  $form['page_caching_alternative']['ape_alternative_lifetime'] = array(
+    '#type' => 'select',
+    '#title' => t('Alternative page expiration'),
+    '#options' => $period,
+    '#default_value' => variable_get('ape_alternative_lifetime', 0),
+    '#description' => t('An alternative page expiration lifetime. Useful for pages that should refresh at a different rate than most pages, such as a short interval like 5 minutes.'),
+  );
+  $form['page_caching_alternative']['ape_alternative'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Pages that should apply alternative cache length'),
+    '#default_value' => variable_get('ape_alternative', ''),
+    '#width' => 40,
+    '#height' => 10,
     '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
   );
 
