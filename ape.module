@@ -78,6 +78,9 @@ function ape_page_delivery_callback_alter(&$callback) {
       $max_age = variable_get('page_cache_maximum_age', 0);
     }
   }
+  // Allow max_age to be altered by hook_ape_cache_alter().
+  $original_max_age = $max_age;
+  drupal_alter('ape_cache_expiration', $max_age, $original_max_age);
   ape_set_cache_header($max_age);
 }
 
