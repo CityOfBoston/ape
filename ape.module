@@ -26,7 +26,7 @@ function ape_menu() {
     'page callback' => 'drupal_get_form',
     'page arguments' => array('ape_admin_settings'),
     'description' => 'Configure the strategy for the cache-control header which defines cache lifetime for external caching systems.',
-    'access arguments' => array('access ape'),
+    'access arguments' => array('administer ape'),
     'file' => 'ape.admin.inc',
   );
 
@@ -64,7 +64,7 @@ function ape_init() {
  */
 function ape_check_cacheable() {
 
-  if (user_is_anonymous() && variable_get('cache', 0)) {
+  if (user_is_anonymous() && variable_get('cache', 0) && drupal_page_is_cacheable()) {
     $excluded = ape_check_path(variable_get('ape_exclusions', ''), $_GET['q']);
     if (!$excluded) {
       return TRUE;
