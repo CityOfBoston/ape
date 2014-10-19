@@ -58,7 +58,11 @@ function ape_admin_settings($form, &$form_state) {
     '#default_value' => variable_get('ape_exclusions', ''),
     '#width' => 40,
     '#height' => 5,
-    '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
+    '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array(
+        '%blog' => 'blog',
+        '%blog-wildcard' => 'blog/*',
+        '%front' => '<front>'
+      )),
   );
 
   $form['page_caching_alternative'] = array(
@@ -80,7 +84,11 @@ function ape_admin_settings($form, &$form_state) {
     '#default_value' => variable_get('ape_alternatives', ''),
     '#width' => 40,
     '#height' => 10,
-    '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array('%blog' => 'blog', '%blog-wildcard' => 'blog/*', '%front' => '<front>')),
+    '#description' => t("Specify pages by using their paths. Enter one path per line. The '*' character is a wildcard. Example paths are %blog for the blog page and %blog-wildcard for every personal blog. %front is the front page.", array(
+        '%blog' => 'blog',
+        '%blog-wildcard' => 'blog/*',
+        '%front' => '<front>'
+      )),
   );
 
   $form['server_codes'] = array(
