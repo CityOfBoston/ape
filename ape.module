@@ -6,13 +6,29 @@
  */
 
 /**
- * Implements hook_permision().
+ * Implements hook_help().
+ */
+function ape_help($path, $arg) {
+  switch ($path) {
+    case 'admin/config/development/ape':
+      return '<p>' . t('Configure the max age header based on path and other criteria.') . '</p>';
+
+    case 'admin/help#ape':
+      $output = '';
+      $output .= '<p>' . t('The advanced page expiration module is a lightweight solution to allow the max age header (used by external caching mechanisms such as Varnish) to be set based on different criteria, such as path or redirect code. This allows for more advanced scenarios such as having the homepage expire every five minutes while the rest of the site expires in one hour.') . '</p>';
+      $output .= '<p>' . t('The <a href="@settings">settings page</a> explains the different options available.', array('@settings' => url('admin/config/development/ape'))) . ' There is also Rules integration and an alter hook available for more complex integrations.</p>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_permission().
  */
 function ape_permission() {
   return array(
     'administer ape' => array(
       'title' => t('Administer advanced page expiration'),
-      'description' => t('Set advanced page expiration rules.'),
+      'description' => t('Configure advanced page expiration.'),
     ),
   );
 }
@@ -131,17 +147,20 @@ function ape_check_cacheable() {
 }
 
 /**
- * Statically cache an expiration length from other modules
+ * Statically cache an expiration length from other modules.
  *
  * @param int $new_age
+ *   The new value for age.
+ *
  * @return int
+ *   The resulting max age.
  */
 function ape_cache_set($new_age = NULL) {
   $max_age = &drupal_static(__FUNCTION__);
-  if(!isset($max_age)) {
+  if (!isset($max_age)) {
     $max_age = NULL;
   }
-  if(is_null($max_age) && !is_null($new_age)) {
+  if (is_null($max_age) && !is_null($new_age)) {
     $max_age = $new_age;
   }
   return $max_age;

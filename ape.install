@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * @file
+ * Install, update, and uninstall functions for the advanced page expiration
+ * module.
+ */
+
+/**
  * Implements hook_uninstall().
  */
 function ape_uninstall() {

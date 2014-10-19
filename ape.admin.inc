@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Admin form for Advanced Page Expiration module
+ * Admin form for advanced page expiration module.
  */
 
 /**
