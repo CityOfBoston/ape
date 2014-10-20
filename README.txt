@@ -28,7 +28,6 @@ RECOMMENDED MODULES
 
 INSTALLATION
 ------------
-
 * Install as usual, see
 https://www.drupal.org/documentation/install/modules-themes/modules-7 for
 further information.
