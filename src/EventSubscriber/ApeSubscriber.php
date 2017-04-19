@@ -88,7 +88,7 @@ class ApeSubscriber implements EventSubscriberInterface {
       $condition = $this->conditionManager->createInstance('request_path');
       $condition->setConfig('pages', $this->configApe->get('alternatives'));
 
-      if ($condition->evaluate()) {
+      if (!empty($this->configApe->get('alternatives')) && $condition->evaluate()) {
         $maxAge = $this->configApe->get('lifetime.alternatives');
       }
       else {

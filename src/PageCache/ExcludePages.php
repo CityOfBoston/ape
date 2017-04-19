@@ -44,7 +44,7 @@ class ExcludePages implements ResponsePolicyInterface {
     $condition = $this->conditionManager->createInstance('request_path');
     $condition->setConfig('pages', $this->config->get('exclusions'));
 
-    if ($condition->evaluate()) {
+    if (!empty($this->config->get('exclusions')) && $condition->evaluate()) {
       return static::DENY;
     }
   }
