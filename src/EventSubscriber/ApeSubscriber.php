@@ -3,6 +3,7 @@
 namespace Drupal\ape\EventSubscriber;
 
 use Drupal\Component\Plugin\Factory\FactoryInterface;
+use Drupal\Core\Cache\CacheableResponseInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -75,9 +76,14 @@ class ApeSubscriber implements EventSubscriberInterface {
     }
 
     $response = $event->getResponse();
+
+    // APE Cache only works with cacheable responses. It does not work
+    // with plain Response objects such as JsonResponse and etc.
+    if (!$response instanceof CacheableResponseInterface) {
+      return;
+    }
+
     $maxAge = ape_cache_set();
-
-
 
     // Check to see if another module or hook has already set an age. This
     // allows rules or other module integration to take precedent.
