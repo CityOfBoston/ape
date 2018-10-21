@@ -2,5 +2,5 @@ ape.admin:
   title: Advanced page expiration
   parent: system.performance_settings
   description: 'Configure advanced page caching.'
-  route_name: system.performance_settings
+  route_name: ape.admin
   weight: -21
