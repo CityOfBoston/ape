@@ -34,7 +34,7 @@ function ape_help($route_name, RouteMatchInterface $route_match) {
  */
 function ape_form_system_performance_settings_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state) {
 
-  unset($form['caching']['page_cache_maximum_age']);
+  $form['caching']['page_cache_maximum_age']['#access'] = FALSE;
 
   $form['caching']['#description'] = Link::fromTextAndUrl(t('Configure page caching strategy with APE.'), Url::fromRoute('ape.admin'))->toString();
 }
