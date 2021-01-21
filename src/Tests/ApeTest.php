@@ -7,7 +7,7 @@
 
 namespace Drupal\ape\Tests;
 
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -15,7 +15,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *
  * @group Advanced Page Expiration
  */
-class ApeTest extends WebTestBase {
+class ApeTest extends BrowserTestBase {
 
   protected $dumpHeaders = TRUE;
 
@@ -74,22 +74,22 @@ class ApeTest extends WebTestBase {
 
     // Check that 403 responses have configured age.
     $this->drupalGet('admin/structure');
-    $headers = $this->drupalGetHeaders(TRUE);
+    $headers = $this->getSession()->getResponseHeader(TRUE);
     $this->assertEqual($headers[0]['cache-control'], 'must-revalidate, no-cache, private', 'Forbidden page was not cached.');
 
     // Check that 404 responses have configured age.
     $this->drupalGet('notfindingthat');
-    $headers = $this->drupalGetHeaders(TRUE);
+    $headers = $this->getSession()->getResponseHeader(TRUE);
     $this->assertEqual($headers[0]['cache-control'], 'max-age=3600, public', '404 Page Not Found Cache-Control header set.');
 
     // Check that 301 redirects work correctly.
     $this->drupalGet('ape_redirect_301');
-    $headers = $this->drupalGetHeaders(TRUE);
+    $headers = $this->getSession()->getResponseHeader(TRUE);
     $this->assertEqual($headers[0]['cache-control'], 'max-age=1800, public', '301 redirect Cache-Control header set.');
 
     // Check that 302 redirects work correctly.
     $this->drupalGet('ape_redirect_302');
-    $headers = $this->drupalGetHeaders(TRUE);
+    $headers = $this->getSession()->getResponseHeader(TRUE);
     $this->assertEqual($headers[0]['cache-control'], 'max-age=600, public', '302 redirect Cache-Control header set.');
   }
 }
