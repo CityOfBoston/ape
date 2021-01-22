@@ -14,10 +14,12 @@ class ApeMinTest extends BrowserTestBase {
 
   protected $dumpHeaders = TRUE;
 
+  protected $defaultTheme = 'stark';
+
   /**
    * {@inheritdoc}
    */
-  public static $modules = ['ape', 'ape_test', 'system'];
+  protected static $modules = ['ape', 'ape_test', 'system'];
 
   /**
    * Exempt from strict schema checking.
