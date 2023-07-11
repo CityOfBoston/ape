@@ -1,0 +1,13 @@
+{
+  "name": "cityofboston/ape",
+  "description": "Drupal 10 port for shortcode: Provides ShortCodes filter framework and API (like WP ShortCodes)",
+  "type": "drupal-module",
+  "minimum-stability": "stable",
+  "homepage": "https://drupal.org/project/shortcode",
+  "authors": [],
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/shortcode",
+    "source": "https://github.com/CityOfBoston/drupal10-shortcode"
+  },
+  "license": "GPL-2.0+"
+}
