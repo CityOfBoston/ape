@@ -56,7 +56,7 @@ class ApeMinTest extends BrowserTestBase {
   public function testApeHeaders() {
     // Check user registration page has global age.
     $this->drupalGet('user/register');
-    $this->assertEqual($this->drupalGetHeader('Cache-Control'), 'max-age=2592000, public', 'Global Cache-Control header set.');
+    $this->assertEquals($this->drupalGetHeader('Cache-Control'), 'max-age=2592000, public', 'Global Cache-Control header set.');
 
   }
 

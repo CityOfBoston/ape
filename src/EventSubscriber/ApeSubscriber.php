@@ -66,10 +66,10 @@ class ApeSubscriber implements EventSubscriberInterface {
   /**
    * Sets extra headers on successful responses.
    *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The event to process.
    */
-  public function onRespond(FilterResponseEvent $event) {
+  public function onRespond(ResponseEvent $event) {
 
     if (!$event->isMasterRequest()) {
       return;
@@ -134,7 +134,7 @@ class ApeSubscriber implements EventSubscriberInterface {
   /**
    * Final cache check to respect defined cache policies and max age.
    *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The event to process.
    *
    * @param int $maxAge
@@ -144,7 +144,7 @@ class ApeSubscriber implements EventSubscriberInterface {
    *   True if caching policies allow caching and max age is greater than 0,
    *   false if not.
    */
-  private function checkCacheable(FilterResponseEvent $event, $maxAge) {
+  private function checkCacheable(ResponseEvent $event, $maxAge) {
     $request = $event->getRequest();
     $response = $event->getResponse();
 
@@ -156,13 +156,13 @@ class ApeSubscriber implements EventSubscriberInterface {
   /**
    * Sets the cache control header.
    *
-   * @param \Symfony\Component\HttpKernel\Event\FilterResponseEvent $event
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
    *   The event to process.
    *
    * @param int $maxAge
    *   The cache expiration age, in seconds.
    */
-  private function setCacheHeader(FilterResponseEvent $event, $maxAge) {
+  private function setCacheHeader(ResponseEvent $event, $maxAge) {
     $response = $event->getResponse();
 
     $value = 'no-cache, must-revalidate';
