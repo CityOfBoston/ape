@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\PageCache\RequestPolicyInterface;
 use Drupal\Core\PageCache\ResponsePolicyInterface;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 
 /**
  * Alter Cache-control header based on configuration of ape.
