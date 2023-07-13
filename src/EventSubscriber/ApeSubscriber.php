@@ -72,7 +72,7 @@ class ApeSubscriber implements EventSubscriberInterface {
    */
   public function onRespond(ResponseEvent $event) {
 
-    if (!$event->isMasterRequest()) {
+    if (!$event->isMainRequest()) {
       return;
     }
 
